@@ -51,9 +51,12 @@ body.lightbox-open {
 }
 
 .container {
-  width: min(1100px, 92%);
-  max-width: 100%;
+  width: 100%;
+  max-width: 1100px;
   margin-inline: auto;
+  padding-inline: clamp(0.85rem, 4.5vw, 2.25rem);
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .site-header {
@@ -72,7 +75,7 @@ body.lightbox-open {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: clamp(0.5rem, 2vw, 1rem);
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -82,7 +85,7 @@ body.lightbox-open {
   text-decoration: none;
   color: var(--text);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: clamp(0.78rem, 0.32rem + 1.5vw, 1.06rem);
 }
 
 .brand-lockup {
@@ -90,6 +93,7 @@ body.lightbox-open {
   align-items: center;
   gap: 0.65rem;
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .brand-logo {
@@ -195,8 +199,9 @@ body.lightbox-open {
   color: var(--muted);
   text-decoration: none;
   font-weight: 500;
+  font-size: clamp(0.8rem, 0.28rem + 1.15vw, 0.95rem);
   border-radius: 8px;
-  padding: 0.78rem 0.85rem;
+  padding: 0.72rem clamp(0.55rem, 1.8vw, 0.85rem);
   position: relative;
   transition: color 0.25s ease, background-color 0.25s ease;
 }
@@ -620,7 +625,7 @@ body.lightbox-open {
 
 .find-us-content {
   width: 100%;
-  max-width: min(1650px, 100%);
+  max-width: min(1100px, 100%);
 }
 
 .find-us-map,
@@ -881,6 +886,7 @@ body.lightbox-open {
   width: 100%;
   max-width: min(860px, 100%);
   min-width: 0;
+  margin-inline: auto;
 }
 
 .hero-content.section-content {
@@ -896,7 +902,7 @@ body.lightbox-open {
 }
 
 .find-us-content.section-content {
-  max-width: min(1650px, 100%);
+  max-width: min(1100px, 100%);
 }
 
 .eyebrow {
@@ -1113,6 +1119,7 @@ textarea {
   width: 100%;
   max-width: min(860px, 100%);
   min-width: 0;
+  margin-inline: auto;
 }
 
 .privacy-content h1 {
@@ -1147,7 +1154,11 @@ textarea {
   margin-bottom: 0.25rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
+  .brand-lockup {
+    flex: 0 1 auto;
+  }
+
   .nav-toggle {
     display: none;
   }
@@ -1156,8 +1167,9 @@ textarea {
     position: static;
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: 0.35rem;
+    gap: clamp(0.15rem, 0.45vw, 0.45rem);
     opacity: 1;
     max-height: none;
     overflow: visible;
@@ -1166,6 +1178,23 @@ textarea {
     background: transparent;
     padding: 0;
     transition: none;
+    min-width: 0;
+  }
+
+  .nav-list li {
+    flex-shrink: 0;
+  }
+
+  .nav-link {
+    white-space: nowrap;
+    font-size: clamp(0.8rem, 0.22rem + 0.85vw, 0.94rem);
+    padding: 0.65rem clamp(0.4rem, 0.9vw, 0.75rem);
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: clamp(1.25rem, 5vw, 2.75rem);
   }
 
   .section {
@@ -1222,15 +1251,6 @@ textarea {
 }
 
 @media (max-width: 767px) {
-  .brand-text {
-    font-size: clamp(0.82rem, 2.8vw, 1rem);
-  }
-
-  .container {
-    width: min(1100px, 94%);
-    max-width: 100%;
-  }
-
   .section {
     min-height: auto;
     padding: calc(var(--header-height) + 1.35rem) 0 1.75rem;
@@ -1320,8 +1340,11 @@ textarea {
     max-width: 46px;
   }
 
+  .brand {
+    font-size: clamp(0.74rem, 3.8vw, 0.88rem);
+  }
+
   .brand-text {
-    font-size: 0.82rem;
     max-width: 13.5rem;
   }
 

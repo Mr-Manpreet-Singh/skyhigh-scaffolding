@@ -1,3 +1,6 @@
+/** Must match CSS: desktop inline nav from this width up (see @media min-width). */
+const NAV_DESKTOP_MIN_PX = 1024;
+
 const header = document.querySelector(".site-header");
 const navToggle = document.querySelector(".nav-toggle");
 const navList = document.querySelector(".nav-list");
@@ -8,7 +11,7 @@ const heroSlides = document.querySelectorAll(".hero-slide");
 const serviceCards = document.querySelectorAll(".service-card");
 const findRevealItems = document.querySelectorAll(".find-reveal");
 const subtleRevealItems = document.querySelectorAll(
-  ".services-content, .gallery-content, #contact .section-content, #contact .contact-form, .site-footer .footer-column"
+  ".gallery-content, #contact .section-content, #contact .contact-form, .site-footer .footer-column"
 );
 const contactForm = document.querySelector("#contact-form");
 const contactSubmitBtn = document.querySelector("#contact-submit-btn");
@@ -33,7 +36,7 @@ if (navToggle && navList) {
     const isOpen = navList.classList.toggle("open");
     navToggle.classList.toggle("active", isOpen);
     navToggle.setAttribute("aria-expanded", String(isOpen));
-    document.body.classList.toggle("menu-open", isOpen && window.innerWidth < 768);
+    document.body.classList.toggle("menu-open", isOpen && window.innerWidth < NAV_DESKTOP_MIN_PX);
   });
 }
 
@@ -65,14 +68,14 @@ navLinks.forEach((link) => {
 });
 
 window.addEventListener("resize", () => {
-  if (window.innerWidth >= 768) {
+  if (window.innerWidth >= NAV_DESKTOP_MIN_PX) {
     closeMobileNav();
   }
 });
 
 document.addEventListener("click", (event) => {
   if (!navList) return;
-  if (window.innerWidth >= 768) return;
+  if (window.innerWidth >= NAV_DESKTOP_MIN_PX) return;
   if (!navList.classList.contains("open")) return;
   if (event.target.closest(".navbar")) return;
   closeMobileNav();
@@ -126,29 +129,40 @@ if (heroSlides.length > 1) {
 }
 
 if (serviceCards.length) {
-  const serviceObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+  const servicesSection = document.querySelector("#services");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const staggerMs = reduceMotion ? 0 : 48;
 
-        const delay = Number(entry.target.dataset.delay || 0);
-        window.setTimeout(() => {
-          entry.target.classList.add("in-view");
-        }, delay);
+  const revealAllServiceCards = () => {
+    serviceCards.forEach((card, index) => {
+      window.setTimeout(() => card.classList.add("in-view"), index * staggerMs);
+    });
+  };
 
-        serviceObserver.unobserve(entry.target);
-      });
-    },
-    {
-      threshold: 0.2,
-      rootMargin: "0px 0px -40px 0px",
-    }
-  );
+  if (reduceMotion) {
+    revealAllServiceCards();
+  } else if (servicesSection) {
+    const narrow = window.matchMedia("(max-width: 767px)");
+    const serviceObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          revealAllServiceCards();
+          observer.disconnect();
+        });
+      },
+      {
+        threshold: 0,
+        rootMargin: narrow.matches
+          ? "120px 0px 320px 0px"
+          : "72px 0px 200px 0px",
+      }
+    );
 
-  serviceCards.forEach((card, index) => {
-    card.dataset.delay = String(index * 90);
-    serviceObserver.observe(card);
-  });
+    serviceObserver.observe(servicesSection);
+  } else {
+    revealAllServiceCards();
+  }
 }
 
 if (findRevealItems.length) {
@@ -181,8 +195,8 @@ if (subtleRevealItems.length) {
       });
     },
     {
-      threshold: 0.18,
-      rootMargin: "0px 0px -40px 0px",
+      threshold: 0,
+      rootMargin: "80px 0px 220px 0px",
     }
   );
 
